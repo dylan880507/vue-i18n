@@ -207,3 +207,17 @@ export function escapeParams(params: any): any {
   }
   return params
 }
+
+/**
+ * Determine whether an integer (positive or negative numbers are supported)
+ * @param {any} param - Content to be tested 
+ * @return {boolean} detection result
+ */
+export function isInteger(param: any): Boolean{
+  if(param == null || param == undefined){
+    return false;
+  }
+
+  let rule = /^[+-]?\d+$/;
+  return rule.test(param);
+}

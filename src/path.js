@@ -1,6 +1,6 @@
 /* @flow */
 
-import { isObject } from './util'
+import { isObject, isInteger } from './util'
 
 /**
  *  Path parser
@@ -275,10 +275,56 @@ export default class I18nPath {
   }
 
   /**
+   * Judge whether the current path is a special path 
+   * special path: 518_用户名
+   * @param {Path} path key, such as 518_用户名, today...
+   * @return {Object} { result:"trur/false", path:"实际的path, 如518" }
+   */
+  isSpecialPath (path: Path): Object {
+    // console.log(`isSpecialPath`);
+    let retObj: Object = Object.create(null);
+    if(!path){
+      retObj = {
+        result:false,
+        path
+      };
+      return retObj;
+    }
+
+    let pathArr: ?Array<string> = path.split("_");
+    if(pathArr == null || pathArr == undefined){
+      pathArr = [];
+    }
+    let length: number = pathArr.length;
+
+    retObj = {
+      result: length == 2 && pathArr[0] && isInteger(pathArr[0]),
+      path: pathArr[0]
+    };
+
+    return retObj;
+  }
+
+  /**
    * Get path value from path string
    */
   getPathValue (obj: mixed, path: Path): PathValue {
     if (!isObject(obj)) { return null }
+
+    // #region 20220511 if path is special path, get real path
+    let retObj:Object = this.isSpecialPath(path);
+    const {
+      result,
+      path:realPath="",
+    } = retObj;
+    //if path is special path
+    if(result){
+      //get real path
+      path = realPath;
+    }
+    // #endregion
+
+    // console.log(`path:${path}`);
 
     const paths: Array<string> = this.parsePath(path)
     if (paths.length === 0) {

@@ -691,6 +691,8 @@ export default class VueI18n {
   }
 
   _t (key: Path, _locale: Locale, messages: LocaleMessages, host: any, ...values: any): any {
+    // console.log("use _t");
+    // console.log(key);
     if (!key) { return '' }
 
     const parsedArgs = parseArgs(...values)
